@@ -1,0 +1,34 @@
+X: 1
+T: Dirty Old Town
+M: C
+L: 1/8
+Q: 1/4=90
+%%score { RH LH }
+%%MIDI gchordoff
+V:RH clef=treble
+V:LH clef=bass
+K: Gmaj
+[V:RH] !1!D2 !2!E2 !3!G2 | !5!B8- | B2 GA B2 G2 | D8- |
+w: I met my | love | _ by the gas works | wall
+w: Clouds are drift- | ing | _ a-cross the _ | moon
+w: I heard her | sigh | _ from the _ _ | decks
+w: I'm go-ing | to | _ take a good sharp | ax
+[V:LH] z6 | "G"G,,2 G,2 D,,2 G,2 | G,,2 G,2 "C"C,2 C2 | "G"G,,2 G,2 D,,2 G,2 |
+[V:RH] D4 !2!B2 !4!d2 | !5!e8- | e2 !4!d!3!B !2!A2 !1!G2 | B8- |
+w: _ Dreamed a | dream | _ by the old ca- | nal
+w: _ Cats are | prowl- | _ ing on their _ | beat
+w: _ Saw a | train | _ set the night on | fire
+w: _ Shin-ing | steel | _ tem-pered in the | fire
+[V:LH] G,,2 G,2 D,,2 G,2 | "C"C,2 C2 G,,2 C2 | C,2 C2 "D"D,,2 D,2 | "G"G,,2 G,2 D,,2 G,2 |
+[V:RH] B2 d2 e2 d2 | B8- | B2 !1!G!4!A B2 G2 | D8- |
+w: _ I kissed my | girl | _ by the fact-ory | wall
+w: _ Springs a _ | girl | _ in the streets at | night
+w: _ Smelled the _ | spring | _ on the smok-y | wind
+w: _ We'll chop you | down | _ like an old dead | tree
+[V:LH] "G"G,,2 G,2 "C"C,2 C2 | "G"G,,2 G,2 D,,2 G,2 | G,,2 G,2 "C"C,2 C2 | "G"G,,2 G,2 D,,2 G,2 |
+[V:RH] D4 !2!EG B2 | A8- | A4 AG E2 | E8- | E2 |]
+w: _ Dir-ty old | town, | _ dir-ty old | town | _
+w: _ Dir-ty old | town, | _ dir-ty old | town | _
+w: _ Dir-ty old | town, | _ dir-ty old | town | _
+w: _ Dir-ty old | town, | _ dir-ty old | town | _
+[V:LH] G,,2 G,2 "Em"E,,2 E,2 | "Am"A,,2 A,2 E,,2 A,2 | A,,2 A,2 E,,2 A,2 | "Em"E,,2 E,2 B,,2 E,2 | [E,,E,]2 |]

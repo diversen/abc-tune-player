@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ABC Player</title>
+<style>
+* { box-sizing: border-box }
+body { margin: 0; background: #edf2ef; color: #16382c; font: 1rem/1.5 "Source Sans 3", system-ui, sans-serif }
+main { max-width: 49rem; margin: auto; padding: 2rem 1rem }
+h1 { margin: 0; font: normal clamp(2rem, 6vw, 3.4rem)/1.1 "Crimson Text", Georgia, serif }
+p { margin: .6rem 0 1rem }
+.controls { display:flex; flex-wrap:wrap; align-items:center; gap:.65rem; margin:1rem 0 }
+select { font:inherit; color:inherit; padding:.25rem .5rem }
+audio { width: 100%; display: block }
+img { display: block; width: 100%; height: auto; margin-top: 1.8rem; box-shadow: 0 2px 14px #133b261a }
+
+.score { overflow-x: auto; margin: 1.5rem 0; background: white; border-radius: .4rem; box-shadow: 0 2px 14px #133b261a }
+.score svg { display: block; width: 100%; min-width: 39rem; color: #16241e }
+.score .playing { color: #b33a17; fill: currentColor; stroke: currentColor }
+summary { cursor: pointer; padding: .6rem 0; font-weight: 600 }
+textarea { display:block; width:100%; padding:.7rem; font:1rem/1.4 monospace; resize:vertical }
+button { margin:.5rem 0; padding:.4rem .8rem; font:inherit; cursor:pointer }
+#file-status.error, #abc-warnings { border-left: .25rem solid #95400e; padding: .6rem .9rem; background: #fff5e8; color: #542904 }
+#abc-warnings ul { margin: .35rem 0 0; padding-left: 1.2rem; max-height: 14rem; overflow: auto; overflow-wrap: anywhere }
+</style>
+<main>
+<h1>Choose a tune</h1>
+<div class="controls">
+<label for="library">Tune library</label>
+<select id="library"><option value="" disabled selected>Select a tune</option></select>
+<label for="abc-file">Open ABC file</label>
+<input id="abc-file" type="file" accept=".abc,.txt,text/plain">
+<label for="tune" hidden>Tune</label><select id="tune" hidden></select>
+</div>
+<details>
+<summary>Paste ABC notation</summary>
+<form id="paste-form">
+<label for="abc-text">ABC notation</label>
+<textarea id="abc-text" rows="7" spellcheck="false" required></textarea>
+<button type="submit">Open and play</button>
+</form>
+</details>
+<p id="file-status" role="status"></p>
+<div id="abc-warnings" role="status" hidden><strong>ABC notation warnings</strong><ul></ul></div>
+<div id="playback" hidden>
+<div class="controls">
+<label for="instrument">Instrument</label>
+<select id="instrument">
+<option value="piano">Piano</option>
+<option value="choir">Synth choir</option>
+<option value="violin">Violin</option>
+<option value="flute">Flute</option>
+<option value="clarinet">Clarinet</option>
+<option value="acoustic_guitar_nylon">Classical guitar</option>
+</select>
+<label for="key">Key</label>
+<select id="key">
+<option value="-5">C minor</option>
+<option value="-4">C♯ minor</option>
+<option value="-3">D minor</option>
+<option value="-2">E♭ minor</option>
+<option value="-1">E minor</option>
+<option value="0" selected>F minor (original)</option>
+<option value="1">F♯ minor</option>
+<option value="2">G minor</option>
+<option value="3">G♯ minor</option>
+<option value="4">A minor</option>
+<option value="5">B♭ minor</option>
+<option value="6">B minor</option>
+</select>
+<label for="tempo">Tempo</label>
+<input id="tempo" type="range" min="40" max="160">
+<output id="tempo-value" for="tempo"></output>
+<label><input id="loop" type="checkbox"> Loop tune</label>
+<output id="verse">Verse 1 of 3</output>
+</div>
+<audio controls controlslist="noplaybackrate" preload="metadata" aria-label="Play selected tune"></audio>
+<section class="score" aria-label="Sheet music from the ABC file"></section>
+<p id="download" hidden><a download>Download ABC file</a></p>
+</div>
+</main>
+<script src="vendor/abcjs.js"></script>
+<script src="vendor/instrument-samples.js"></script>
+<script src="vendor/melody-samples.js"></script>
+<script src="tunes-library.js"></script>
+<script src="demo.js"></script>
+</html>
