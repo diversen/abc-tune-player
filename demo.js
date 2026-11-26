@@ -5,7 +5,6 @@ loopControl.addEventListener('change', () => { player.loop = loopControl.checked
 const instrument = document.querySelector('#instrument');
 const key = document.querySelector('#key');
 const verse = document.querySelector('#verse');
-let songs = tuneLibrary;
 let source;
 let original;
 let tracks;
@@ -206,14 +205,7 @@ function openTune({ abc, parsed, audio, bpm }, filename) {
   source = abc;
   original = parsed;
   tracks = audio.tracks;
-  verseCount = 1;
-  for (const [file, count] of [['sommerdag.abc', 3], ['dirty_old_town.abc', 4]]) {
-    const entry = songs[file];
-    if (entry && abc.trim() === entry.slice(entry.indexOf('X:')).trim()) {
-      verseCount = count;
-      break;
-    }
-  }
+  verseCount = title === 'Dirty Old Town' && /^w:.*(?:\nw:.*){3}/m.test(abc) ? 4 : 1;
   scoreTempo = bpm;
   secondsPerWholeNote = 240 / scoreTempo;
   key.value = '0';
@@ -246,7 +238,7 @@ function openBook(input, fallbackTitle, libraryFile = '') {
   library.value = libraryFile;
   const download = document.querySelector('#download');
   download.hidden = !libraryFile;
-  if (libraryFile) download.querySelector('a').href = 'tunes/' + libraryFile.split('/').map(encodeURIComponent).join('/');
+  if (libraryFile) download.querySelector('a').href = tuneUrl(libraryFile);
   tuneSelect.replaceChildren(...tunes.map((entry, i) =>
     new Option(entry.title || 'Tune ' + (i + 1), i)));
   tuneSelect.hidden = tuneSelect.labels[0].hidden = tunes.length < 2;
@@ -295,6 +287,7 @@ fileInput.addEventListener('change', async () => {
 });
 
 tuneSelect.addEventListener('change', () => {
+  ++readId;
   try {
     openTune(prepareTune(book[tuneSelect.value].abc), tuneSelect.selectedOptions[0].text);
     status.textContent = '';
@@ -306,38 +299,42 @@ tuneSelect.addEventListener('change', () => {
 });
 
 const library = document.querySelector('#library');
-function showLibrary() {
-  const selected = library.value;
-  const entries = Object.entries(songs).map(([file, abc]) => ({
-    file, title: abc.match(/^T:[ \t]*(.+)$/m)?.[1].trim() || file
-  }));
-  entries.sort((a, b) => a.title.localeCompare(b.title, 'en'));
-  library.replaceChildren(library.options[0], ...entries.map(({ file, title }) => new Option(title, file)));
-  library.value = Object.hasOwn(songs, selected) ? selected : '';
-  library.disabled = entries.length === 0;
+function tuneUrl(file) {
+  return 'tunes/' + file.split('/').map(encodeURIComponent).join('/');
 }
 
-showLibrary();
 async function refreshLibrary() {
   try {
-    const response = await fetch('/api/tunes', { cache: 'no-store' });
+    const response = await fetch('api/tunes', { cache: 'no-store' });
     if (!response.ok || !response.headers.get('content-type')?.includes('application/json')) return;
-    const current = await response.json();
-    if (JSON.stringify(current) !== JSON.stringify(songs)) {
-      songs = current;
-      showLibrary();
-    }
+    const entries = await response.json();
+    entries.sort((a, b) => a.title.localeCompare(b.title, 'en'));
+    const selected = library.value;
+    library.replaceChildren(library.options[0], ...entries.map(({ file, title }) => new Option(title, file)));
+    library.value = entries.some(entry => entry.file === selected) ? selected : '';
+    library.disabled = entries.length === 0;
   } catch {
-    // Keep the last readable library during a temporary disconnect.
+    // Static hosts use the bundled filenames listed in the selector.
   }
 }
-if (location.protocol === 'http:' || location.protocol === 'https:') refreshLibrary();
-library.addEventListener('change', () => {
-  ++readId;
+
+if (location.protocol === 'file:') {
+  library.hidden = library.labels[0].hidden = true;
+  status.textContent = 'Choose an ABC file from the tunes folder to play it.';
+} else if (!location.hostname.endsWith('.github.io')) {
+  refreshLibrary();
+}
+
+library.addEventListener('change', async () => {
+  const id = ++readId;
   const file = library.value;
   try {
-    openBook(songs[file], file, file);
+    const response = await fetch(tuneUrl(file), { cache: 'no-store' });
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    const text = await response.text();
+    if (id === readId) openBook(text, file, file);
   } catch (error) {
+    if (id !== readId) return;
     library.value = '';
     status.classList.add('error');
     status.textContent = 'Could not open ' + file + '. ' + error.message;

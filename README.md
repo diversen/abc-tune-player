@@ -4,22 +4,18 @@ Sheet Interpreter is a browser-based player for ABC notation. It renders a tune 
 
 ## Try the player
 
-Open [index.html](index.html) directly in your browser. The demo works offline using the bundled tune library, the abcjs renderer, and audio samples from [vendor/](vendor/). To host the same demo on GitHub Pages, publish the repository root.
+[Open the GitHub Pages demo](https://diversen.github.io/abc-tune-player/) and choose a song from **Tune library**.
 
-Select a bundled tune from the **Tune library**, open a local file with **Open ABC file**, or enter ABC text under **Paste ABC notation**. If a file contains several tunes, use the **Tune** selector to choose one.
-
-## Work with the tune library
-
-When adding or editing tunes, run the local server from the project directory with Python 3.13 or later. It uses only the Python standard library.
+To run the player locally, start the server from the project directory. It uses only the Python standard library.
 
 ```sh
 python3 main.py
 ```
 
-Open [the local player](http://localhost:8765). Save your tune as a UTF-8 `.abc` file in [tunes/](tunes/) or one of its subdirectories, then reload the page. The server reads the tune files on each page load.
+Open [the local player](http://localhost:8765) and select a song from **Tune library**. The player reads the selected ABC file directly from [tunes/](tunes/). To add a song, save a UTF-8 `.abc` file there or in a subdirectory and reload the page. To hear an edit, select the song again after reloading.
 
-To include your changes in the offline demo, rebuild its catalog from the project directory and commit the updated `tunes-library.js` alongside the tune files.
+You can also use **Open ABC file** or **Paste ABC notation**, including when you open [index.html](index.html) directly from disk. If a file contains several tunes, use the **Tune** selector to choose one. The renderer and audio samples are included for offline use.
 
-```sh
-python3 update_tunes.py
-```
+## Bundled tunes on GitHub Pages
+
+Edit the ABC files in [tunes/](tunes/) to change the music or lyrics. When adding, renaming, or removing a tune, update its option in the library selector in [index.html](index.html).

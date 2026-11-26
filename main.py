@@ -4,9 +4,19 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlsplit
 
-from update_tunes import read_songs
-
 ROOT = Path(__file__).resolve().parent
+
+
+def tune_index():
+    directory = ROOT / "tunes"
+    entries = []
+    for path in sorted(directory.rglob("*")):
+        if path.is_file() and path.suffix.lower() == ".abc":
+            file = path.relative_to(directory).as_posix()
+            with path.open(encoding="utf-8-sig") as tune:
+                title = next((line[2:].strip() for line in tune if line.startswith("T:")), "")
+            entries.append({"file": file, "title": title or file})
+    return entries
 
 
 class PlayerHandler(SimpleHTTPRequestHandler):
@@ -18,7 +28,7 @@ class PlayerHandler(SimpleHTTPRequestHandler):
         if path != "/api/tunes":
             return super().do_GET()
         try:
-            content = json.dumps(read_songs(ROOT / "tunes")).encode()
+            content = json.dumps(tune_index()).encode()
         except (OSError, UnicodeError):
             self.send_error(500, "Could not read the tune library")
             return
